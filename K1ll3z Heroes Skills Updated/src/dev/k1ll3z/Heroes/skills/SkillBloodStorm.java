@@ -12,7 +12,7 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -40,30 +40,30 @@ public class SkillBloodStorm extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.RADIUS.node(), Integer.valueOf(10));
-    node.set(Setting.DURATION.node(), Integer.valueOf(10000));
-    node.set(Setting.PERIOD.node(), Integer.valueOf(2000));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(10));
+    node.set(SkillSetting.RADIUS.node(), Integer.valueOf(10));
+    node.set(SkillSetting.DURATION.node(), Integer.valueOf(10000));
+    node.set(SkillSetting.PERIOD.node(), Integer.valueOf(2000));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(10));
     node.set("tick-damage", Integer.valueOf(1));
-    node.set(Setting.APPLY_TEXT.node(), "%target% is bleeding!");
-    node.set(Setting.EXPIRE_TEXT.node(), "%target% has stopped bleeding!");
+    node.set(SkillSetting.APPLY_TEXT.node(), "%target% is bleeding!");
+    node.set(SkillSetting.EXPIRE_TEXT.node(), "%target% has stopped bleeding!");
     return node;
   }
 
   public void init()
   {
     super.init();
-    this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%target% is bleeding!").replace("%target%", "$1");
-    this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT.node(), "%target% has stopped bleeding!").replace("%target%", "$1");
+    this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%target% is bleeding!").replace("%target%", "$1");
+    this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT.node(), "%target% has stopped bleeding!").replace("%target%", "$1");
   }
 
   public SkillResult use(Hero hero, String[] args)
   {
     Player player = hero.getPlayer();
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 10, false);
-    long duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 10000, false);
-    long period = SkillConfigManager.getUseSetting(hero, this, Setting.PERIOD, 2000, true);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 10, false);
+    long duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 10000, false);
+    long period = SkillConfigManager.getUseSetting(hero, this, SkillSetting.PERIOD, 2000, true);
     int tickDamage = SkillConfigManager.getUseSetting(hero, this, "tick-damage", 1, false);
     List entities = hero.getPlayer().getNearbyEntities(radius, radius, radius);
     Iterator i$ = entities.iterator();
@@ -79,7 +79,7 @@ public class SkillBloodStorm extends ActiveSkill
       }
       else
       {
-        damageEntity(target, player, damage, EntityDamageEvent.DamageCause.MAGIC);
+        damageEntity(target, player, damage, DamageCause.MAGIC);
       }
     }
 
@@ -96,7 +96,7 @@ public class SkillBloodStorm extends ActiveSkill
   {
     public BleedSkillEffect(Skill skill, long duration, long period, int tickDamage, Player applier)
     {
-      super("Bleed", period, duration, tickDamage, applier);
+      super(skill, "Bleed", period, duration, tickDamage, applier);
       this.types.add(EffectType.BLEED);
     }
 

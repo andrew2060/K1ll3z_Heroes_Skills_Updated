@@ -9,7 +9,7 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -34,16 +34,16 @@ public class SkillFatefulChain extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.RADIUS.node(), Integer.valueOf(10));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(6));
-    node.set(Setting.DURATION.node(), Integer.valueOf(5000));
+    node.set(SkillSetting.RADIUS.node(), Integer.valueOf(10));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(6));
+    node.set(SkillSetting.DURATION.node(), Integer.valueOf(5000));
     return node;
   }
 
   public SkillResult use(Hero hero, String[] args)
   {
     Player player = hero.getPlayer();
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 5000, false);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 5000, false);
     hero.addEffect(new FatefulChainEffect(this, duration));
     broadcastExecuteText(hero);
     return SkillResult.NORMAL;
@@ -51,16 +51,16 @@ public class SkillFatefulChain extends ActiveSkill
 
   public String getDescription(Hero hero)
   {
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 10, false);
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 6, false);
-    return getDescription().replace("$1", damage);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 10, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 6, false);
+    return getDescription().replace("$1", damage + "");
   }
 
   public class FatefulChainEffect extends ExpirableEffect
   {
     public FatefulChainEffect(Skill skill, long duration)
     {
-      super("FatefulChainEffect", duration);
+      super(skill, "FatefulChainEffect", duration);
       this.types.add(EffectType.BENEFICIAL);
       this.types.add(EffectType.DISPELLABLE);
     }
@@ -69,8 +69,8 @@ public class SkillFatefulChain extends ActiveSkill
     {
       super.applyToHero(hero);
       Player player = hero.getPlayer();
-      int ldamage = player.getLastDamage();
-      int radius = SkillConfigManager.getUseSetting(hero, SkillFatefulChain.this, Setting.RADIUS, 10, false);
+      double ldamage = player.getLastDamage();
+      int radius = SkillConfigManager.getUseSetting(hero, SkillFatefulChain.this, SkillSetting.RADIUS, 10, false);
       List entities = player.getNearbyEntities(radius, radius, radius);
       Iterator i$ = entities.iterator();
 
@@ -80,7 +80,7 @@ public class SkillFatefulChain extends ActiveSkill
         if ((entity instanceof LivingEntity));
         LivingEntity target = (LivingEntity)entity;
         SkillFatefulChain.this.addSpellTarget(target, hero);
-        SkillFatefulChain.damageEntity(target, player, ldamage, EntityDamageEvent.DamageCause.MAGIC);
+        SkillFatefulChain.damageEntity(target, player, ldamage, DamageCause.MAGIC);
       }
     }
   }

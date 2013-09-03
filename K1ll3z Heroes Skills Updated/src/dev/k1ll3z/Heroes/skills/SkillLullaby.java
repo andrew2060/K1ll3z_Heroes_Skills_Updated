@@ -11,7 +11,7 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Set;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -38,22 +38,22 @@ public class SkillLullaby extends TargettedSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(4));
-    node.set(Setting.DURATION.node(), Integer.valueOf(6000));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(4));
+    node.set(SkillSetting.DURATION.node(), Integer.valueOf(6000));
     return node;
   }
 
   public void init()
   {
     super.init();
-    this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%hero% has sung a lullaby!").replace("%hero%", "$1");
-    this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT.node(), "%hero%'s lullaby wore off!").replace("%hero%", "$1");
+    this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%hero% has sung a lullaby!").replace("%hero%", "$1");
+    this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT.node(), "%hero%'s lullaby wore off!").replace("%hero%", "$1");
   }
 
   public SkillResult use(Hero hero, LivingEntity target, String[] args)
   {
     Player player = hero.getPlayer();
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 6000, false);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 6000, false);
     StunEffect tEffect = new StunEffect(this, duration);
     this.plugin.getCharacterManager().getHero((Player)target).addEffect(new BloodlustEffect(this, duration, this.applyText, this.expireText));
     this.plugin.getCharacterManager().getHero((Player)target).addEffect(tEffect);
@@ -63,7 +63,7 @@ public class SkillLullaby extends TargettedSkill
 
   public String getDescription(Hero hero)
   {
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 4, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 4, false);
     return getDescription().replace("$1", damage + "");
   }
 
@@ -74,7 +74,7 @@ public class SkillLullaby extends TargettedSkill
 
     public BloodlustEffect(Skill skill, long duration, String applyText, String expireText)
     {
-      super("Bloodlust", duration);
+      super(skill,"Bloodlust", duration);
       this.applyText = applyText;
       this.expireText = expireText;
       this.types.add(EffectType.DISPELLABLE);

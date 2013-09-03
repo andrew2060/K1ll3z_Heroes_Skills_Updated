@@ -6,7 +6,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -27,24 +27,24 @@ public class SkillCrusaderStrike extends TargettedSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(15));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(15));
     return node;
   }
 
   public SkillResult use(Hero hero, LivingEntity target, String[] args)
   {
     Player player = hero.getPlayer();
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 15, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 15, false);
     addSpellTarget(target, hero);
-    damageEntity(target, player, damage, EntityDamageEvent.DamageCause.MAGIC);
+    damageEntity(target, player, damage, DamageCause.MAGIC);
     broadcastExecuteText(hero, target);
     return SkillResult.NORMAL;
   }
 
   public String getDescription(Hero hero)
   {
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 15, false);
-    return getDescription().replace("$1", damage);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 15, false);
+    return getDescription().replace("$1", damage + "");
   }
 }
 

@@ -9,7 +9,7 @@ import com.herocraftonline.heroes.characters.effects.common.SlowEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Iterator;
 import java.util.List;
 import org.bukkit.World;
@@ -37,31 +37,31 @@ public class SkillThunderClap extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.RADIUS.node(), Integer.valueOf(10));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(10));
+    node.set(SkillSetting.RADIUS.node(), Integer.valueOf(10));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(10));
     node.set("speed-multiplier", Integer.valueOf(2));
-    node.set(Setting.DURATION.node(), Integer.valueOf(15000));
-    node.set(Setting.APPLY_TEXT.node(), "%target% has been slowed by %hero%!");
-    node.set(Setting.EXPIRE_TEXT.node(), "%target% is no longer slowed!");
+    node.set(SkillSetting.DURATION.node(), Integer.valueOf(15000));
+    node.set(SkillSetting.APPLY_TEXT.node(), "%target% has been slowed by %hero%!");
+    node.set(SkillSetting.EXPIRE_TEXT.node(), "%target% is no longer slowed!");
     return node;
   }
 
   public void init()
   {
-    this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT, "%target% has been slowed by %hero%!").replace("%target%", "$1").replace("%hero%", "$2");
-    this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT, "%target% is no longer slowed!").replace("%target%", "$1");
+    this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT, "%target% has been slowed by %hero%!").replace("%target%", "$1").replace("%hero%", "$2");
+    this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT, "%target% is no longer slowed!").replace("%target%", "$1");
   }
 
   public SkillResult use(Hero hero, String[] args)
   {
     Player player = hero.getPlayer();
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 15000, false);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 15000, false);
     int multiplier = SkillConfigManager.getUseSetting(hero, this, "speed-multiplier", 2, false);
     if (multiplier > 20) {
       multiplier = 20;
     }
     SlowEffect cEffect = new SlowEffect(this, duration, multiplier, true, this.applyText, this.expireText, hero);
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 10, false);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 10, false);
     List entities = hero.getPlayer().getNearbyEntities(radius, radius, radius);
     Iterator i$ = entities.iterator();
 
@@ -72,11 +72,11 @@ public class SkillThunderClap extends ActiveSkill
         LivingEntity target = (LivingEntity)n;
         if (!target.equals(player))
         {
-          int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
+          int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
           target.getWorld().strikeLightningEffect(target.getLocation());
 
           this.plugin.getDamageManager().addSpellTarget(target, hero, this);
-          damageEntity(target, player, damage, EntityDamageEvent.DamageCause.LIGHTNING);
+          damageEntity(target, player, damage, DamageCause.LIGHTNING);
         }
         Player p = (Player)n;
         Hero tHero = this.plugin.getCharacterManager().getHero(p);
@@ -89,7 +89,7 @@ public class SkillThunderClap extends ActiveSkill
 
   public String getDescription(Hero hero)
   {
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
     return getDescription();
   }
 }

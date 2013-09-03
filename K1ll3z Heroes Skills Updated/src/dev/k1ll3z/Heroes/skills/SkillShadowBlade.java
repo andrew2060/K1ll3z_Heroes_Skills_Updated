@@ -8,7 +8,7 @@ import com.herocraftonline.heroes.characters.effects.common.SilenceEffect;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Iterator;
 import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
@@ -32,18 +32,18 @@ public class SkillShadowBlade extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.RADIUS.node(), Integer.valueOf(10));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(10));
-    node.set(Setting.DURATION.node(), Integer.valueOf(5000));
+    node.set(SkillSetting.RADIUS.node(), Integer.valueOf(10));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(10));
+    node.set(SkillSetting.DURATION.node(), Integer.valueOf(5000));
     return node;
   }
 
   public SkillResult use(Hero hero, String[] args)
   {
     Player player = hero.getPlayer();
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 5000, false);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 5000, false);
     SilenceEffect sEffect = new SilenceEffect(this, duration);
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 10, false);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 10, false);
     List entities = hero.getPlayer().getNearbyEntities(radius, radius, radius);
     Iterator i$ = entities.iterator();
 
@@ -54,9 +54,9 @@ public class SkillShadowBlade extends ActiveSkill
       LivingEntity target = (LivingEntity)entity;
       if (!target.equals(player))
       {
-        int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
+        int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
         addSpellTarget(target, hero);
-        damageEntity(target, player, damage, EntityDamageEvent.DamageCause.LIGHTNING);
+        damageEntity(target, player, damage, DamageCause.LIGHTNING);
       }
 
     }
@@ -76,10 +76,10 @@ public class SkillShadowBlade extends ActiveSkill
 
   public String getDescription(Hero hero)
   {
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 5000, false);
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 20, false);
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
-    return getDescription().replace("$1", damage);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 5000, false);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 20, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
+    return getDescription().replace("$1", damage + "");
   }
 }
 

@@ -8,7 +8,7 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.Server;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -31,8 +31,8 @@ public class SkillRedemption extends TargettedSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(10));
-    node.set(Setting.HEALTH.node(), Integer.valueOf(5));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(10));
+    node.set(SkillSetting.HEALTH.node(), Integer.valueOf(5));
     return node;
   }
 
@@ -42,8 +42,8 @@ public class SkillRedemption extends TargettedSkill
       return SkillResult.INVALID_TARGET;
     }
     Player player = hero.getPlayer();
-    int hpMinus = SkillConfigManager.getUseSetting(hero, this, Setting.HEALTH, 5, false);
-    int hhealth = hero.getHealth();
+    int hpMinus = SkillConfigManager.getUseSetting(hero, this, SkillSetting.HEALTH, 5, false);
+    double hhealth = hero.getEntity().getHealth();
 
     if (hhealth < 10) {
       Messaging.send(player, "You're health is too low!", new Object[0]);
@@ -53,12 +53,11 @@ public class SkillRedemption extends TargettedSkill
     HeroRegainHealthEvent hrhEvent = new HeroRegainHealthEvent(hero, hpMinus, this);
     this.plugin.getServer().getPluginManager().callEvent(hrhEvent);
 
-    hero.setHealth(hhealth - hrhEvent.getAmount());
-    hero.syncHealth();
+    hero.getEntity().setHealth(hhealth - hrhEvent.getAmount());
 
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
     addSpellTarget(target, hero);
-    damageEntity(target, player, damage, EntityDamageEvent.DamageCause.MAGIC);
+    damageEntity(target, player, damage, DamageCause.MAGIC);
 
     broadcastExecuteText(hero, target);
     return SkillResult.NORMAL;
@@ -66,9 +65,9 @@ public class SkillRedemption extends TargettedSkill
 
   public String getDescription(Hero hero)
   {
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
-    int hpMinus = SkillConfigManager.getUseSetting(hero, this, Setting.HEALTH, 15, false);
-    return getDescription().replace("$1", hpMinus).replace("$2", damage);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
+    int hpMinus = SkillConfigManager.getUseSetting(hero, this, SkillSetting.HEALTH, 15, false);
+    return getDescription().replace("$1", hpMinus + "").replace("$2", damage + "");
   }
 }
 

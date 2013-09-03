@@ -9,7 +9,7 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Set;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -32,16 +32,16 @@ public class SkillFireskin extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.APPLY_TEXT.node(), "%hero% has fireskin!");
-    node.set(Setting.EXPIRE_TEXT.node(), "%hero% no longer has fireskin!");
+    node.set(SkillSetting.APPLY_TEXT.node(), "%hero% has fireskin!");
+    node.set(SkillSetting.EXPIRE_TEXT.node(), "%hero% no longer has fireskin!");
     return node;
   }
 
   public void init()
   {
     super.init();
-    this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%hero% has fireskin!").replace("%hero%", "$1");
-    this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT.node(), "%hero% no longer has fireskin!").replace("%hero%", "$1");
+    this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%hero% has fireskin!").replace("%hero%", "$1");
+    this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT.node(), "%hero% no longer has fireskin!").replace("%hero%", "$1");
   }
 
   public SkillResult use(Hero hero, String[] args)
@@ -60,8 +60,8 @@ public class SkillFireskin extends ActiveSkill
 
   public String getDescription(Hero hero)
   {
-    int amount = SkillConfigManager.getUseSetting(hero, this, Setting.AMOUNT, 20, false);
-    return getDescription().replace("$1", amount);
+    int amount = SkillConfigManager.getUseSetting(hero, this, SkillSetting.AMOUNT, 20, false);
+    return getDescription().replace("$1", amount + "");
   }
 
   public class FireskinEffect extends Effect
@@ -71,7 +71,7 @@ public class SkillFireskin extends ActiveSkill
 
     public FireskinEffect(Skill skill, String applyText, String expireText)
     {
-      super("Fireskin");
+      super(skill, "Fireskin");
       this.applyText = applyText;
       this.expireText = expireText;
       this.types.add(EffectType.RESIST_FIRE);

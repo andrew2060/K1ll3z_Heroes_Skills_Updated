@@ -11,7 +11,7 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -43,10 +43,10 @@ public class SkillFireFists extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.DURATION.node(), Integer.valueOf(30000));
+    node.set(SkillSetting.DURATION.node(), Integer.valueOf(30000));
     node.set("fire-ticks", Integer.valueOf(100));
     node.set("ignite-text", "%hero% has lit %target% on fire with his fists!");
-    node.set(Setting.EXPIRE_TEXT.node(), "%hero% no longer has firefists!");
+    node.set(SkillSetting.EXPIRE_TEXT.node(), "%hero% no longer has firefists!");
     return node;
   }
 
@@ -57,7 +57,7 @@ public class SkillFireFists extends ActiveSkill
 
   public SkillResult use(Hero hero, String[] args)
   {
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 30000, false);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 30000, false);
     hero.addEffect(new FireFistsEffect(this, duration));
     broadcastExecuteText(hero);
     return SkillResult.NORMAL;
@@ -66,14 +66,14 @@ public class SkillFireFists extends ActiveSkill
   public String getDescription(Hero hero)
   {
     int fireTicks = SkillConfigManager.getUseSetting(hero, this, "fire-ticks", 20, false);
-    return getDescription().replace("$1", fireTicks);
+    return getDescription().replace("$1", fireTicks + "");
   }
 
   public class FireFistsEffect extends ExpirableEffect
   {
     public FireFistsEffect(Skill skill, long duration)
     {
-      super("FireFistsEffect", duration);
+      super(skill, "FireFistsEffect", duration);
       this.types.add(EffectType.BENEFICIAL);
       this.types.add(EffectType.DISPELLABLE);
       this.types.add(EffectType.FIRE);

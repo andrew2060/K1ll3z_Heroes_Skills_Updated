@@ -11,7 +11,7 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -49,7 +49,7 @@ public class SkillLightningArrow extends ActiveSkill
   {
     ConfigurationSection node = super.getDefaultConfig();
     node.set("mana-per-shot", Integer.valueOf(1));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(5));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(5));
     return node;
   }
 
@@ -60,7 +60,7 @@ public class SkillLightningArrow extends ActiveSkill
       hero.removeEffect(hero.getEffect("LightningArrowBuff"));
       return SkillResult.SKIP_POST_USAGE;
     }
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 30000, false);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 30000, false);
     if (player.getItemInHand().getType() != Material.BOW) {
       Messaging.send(player, "You must be holding a bow to do this.", new Object[0]);
       return SkillResult.INVALID_TARGET_NO_MSG;
@@ -75,14 +75,14 @@ public class SkillLightningArrow extends ActiveSkill
   public String getDescription(Hero hero)
   {
     int mana = SkillConfigManager.getUseSetting(hero, this, "mana-per-shot", 1, false);
-    return getDescription().replace("$1", mana);
+    return getDescription().replace("$1", mana + "");
   }
 
   public class LightningArrowBuff extends ExpirableEffect
   {
     public LightningArrowBuff(Skill skill, long duration)
     {
-      super("LightningArrowBuff", duration);
+      super(skill, "LightningArrowBuff", duration);
       this.types.add(EffectType.LIGHTNING);
       SkillLightningArrow.this.setDescription("lightning");
     }

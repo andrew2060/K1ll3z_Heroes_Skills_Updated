@@ -14,7 +14,7 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Set;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -38,27 +38,27 @@ public class SkillMindShatter extends TargettedSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.DURATION.node(), Integer.valueOf(3000));
-    node.set(Setting.PERIOD.node(), Integer.valueOf(1000));
+    node.set(SkillSetting.DURATION.node(), Integer.valueOf(3000));
+    node.set(SkillSetting.PERIOD.node(), Integer.valueOf(1000));
     node.set("tick-damage", Integer.valueOf(3));
-    node.set(Setting.AMOUNT.node(), Integer.valueOf(20));
-    node.set(Setting.APPLY_TEXT.node(), "%target%'s mind has been shattered!");
-    node.set(Setting.EXPIRE_TEXT.node(), "%target% has regained their mind!");
+    node.set(SkillSetting.AMOUNT.node(), Integer.valueOf(20));
+    node.set(SkillSetting.APPLY_TEXT.node(), "%target%'s mind has been shattered!");
+    node.set(SkillSetting.EXPIRE_TEXT.node(), "%target% has regained their mind!");
     return node;
   }
 
   public void init()
   {
     super.init();
-    this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%target%'s mind has been shattered!").replace("%target%", "$1");
-    this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT.node(), "%target% has regained their mind!").replace("%target%", "$1");
+    this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%target%'s mind has been shattered!").replace("%target%", "$1");
+    this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT.node(), "%target% has regained their mind!").replace("%target%", "$1");
   }
 
   public SkillResult use(Hero hero, LivingEntity target, String[] args)
   {
     Player player = hero.getPlayer();
-    long duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 3000, false);
-    long period = SkillConfigManager.getUseSetting(hero, this, Setting.PERIOD, 1000, true);
+    long duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 3000, false);
+    long period = SkillConfigManager.getUseSetting(hero, this, SkillSetting.PERIOD, 1000, true);
     int tickDamage = SkillConfigManager.getUseSetting(hero, this, "tick-damage", 3, false);
     SilenceEffect sEffect = new SilenceEffect(this, duration);
     StunEffect tEffect = new StunEffect(this, duration);
@@ -73,15 +73,15 @@ public class SkillMindShatter extends TargettedSkill
 
   public String getDescription(Hero hero)
   {
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 3, false);
-    return getDescription().replace("$1", duration);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 3, false);
+    return getDescription().replace("$1", duration + "");
   }
 
   public class BleedSkillEffect extends PeriodicDamageEffect
   {
     public BleedSkillEffect(Skill skill, long duration, long period, int tickDamage, Player applier)
     {
-      super("Bleed", period, duration, tickDamage, applier);
+      super(skill,"Bleed", period, duration, tickDamage, applier);
       this.types.add(EffectType.BLEED);
     }
 

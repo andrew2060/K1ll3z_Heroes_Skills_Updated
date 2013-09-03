@@ -8,7 +8,7 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
 import com.herocraftonline.heroes.util.Messaging;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.Server;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -31,8 +31,8 @@ public class SkillSapStrike extends TargettedSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.HEALTH.node(), Integer.valueOf(10));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(10));
+    node.set(SkillSetting.HEALTH.node(), Integer.valueOf(10));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(10));
     return node;
   }
 
@@ -40,18 +40,17 @@ public class SkillSapStrike extends TargettedSkill
   {
     Player player = hero.getPlayer();
 
-    int hpPlus = SkillConfigManager.getUseSetting(hero, this, Setting.HEALTH, 10, false);
+    int hpPlus = SkillConfigManager.getUseSetting(hero, this, SkillSetting.HEALTH, 10, false);
     HeroRegainHealthEvent hrhEvent = new HeroRegainHealthEvent(hero, hpPlus, this);
     this.plugin.getServer().getPluginManager().callEvent(hrhEvent);
     if (hrhEvent.isCancelled()) {
       Messaging.send(player, "Unable to regain health at the time!", new Object[0]);
       return SkillResult.CANCELLED;
     }
-    hero.setHealth(hero.getHealth() + hrhEvent.getAmount());
-    hero.syncHealth();
+    hero.getEntity().setHealth(hero.getEntity().getHealth() + hrhEvent.getAmount());
     addSpellTarget(target, hero);
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 15, false);
-    damageEntity(target, player, damage, EntityDamageEvent.DamageCause.MAGIC);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 15, false);
+    damageEntity(target, player, damage, DamageCause.MAGIC);
 
     broadcastExecuteText(hero, target);
     return SkillResult.NORMAL;

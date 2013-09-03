@@ -10,7 +10,7 @@ import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import com.herocraftonline.heroes.util.Util;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -42,27 +42,27 @@ public class SkillWhirlWind extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.RADIUS.node(), Integer.valueOf(5));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(5));
-    node.set(Setting.APPLY_TEXT.node(), "%target% is disarmed!");
-    node.set(Setting.EXPIRE_TEXT.node(), "%target% is no longer disarmed!");
+    node.set(SkillSetting.RADIUS.node(), Integer.valueOf(5));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(5));
+    node.set(SkillSetting.APPLY_TEXT.node(), "%target% is disarmed!");
+    node.set(SkillSetting.EXPIRE_TEXT.node(), "%target% is no longer disarmed!");
     return node;
   }
 
   public void init()
   {
     super.init();
-    this.applyText = SkillConfigManager.getRaw(this, Setting.APPLY_TEXT.node(), "%target% is disarmed!").replace("%target%", "$1");
-    this.expireText = SkillConfigManager.getRaw(this, Setting.EXPIRE_TEXT.node(), "%target% is no longer disarmed!").replace("%target%", "$1");
+    this.applyText = SkillConfigManager.getRaw(this, SkillSetting.APPLY_TEXT.node(), "%target% is disarmed!").replace("%target%", "$1");
+    this.expireText = SkillConfigManager.getRaw(this, SkillSetting.EXPIRE_TEXT.node(), "%target% is no longer disarmed!").replace("%target%", "$1");
   }
 
   public SkillResult use(Hero hero, String[] args)
   {
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 5, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 5, false);
     Player player = hero.getPlayer();
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 5, false);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 5, false);
     List entities = hero.getPlayer().getNearbyEntities(radius, radius, radius);
-    int duration = SkillConfigManager.getUseSetting(hero, this, Setting.DURATION, 5000, false);
+    int duration = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION, 5000, false);
     Iterator i$ = entities.iterator();
 
     while (i$.hasNext())
@@ -75,7 +75,7 @@ public class SkillWhirlWind extends ActiveSkill
       }
       else
       {
-        damageEntity((LivingEntity)n, player, damage, EntityDamageEvent.DamageCause.MAGIC);
+        damageEntity((LivingEntity)n, player, damage, DamageCause.MAGIC);
       }
     }
     broadcastExecuteText(hero);
@@ -84,8 +84,8 @@ public class SkillWhirlWind extends ActiveSkill
 
   public String getDescription(Hero hero)
   {
-    int amount = SkillConfigManager.getUseSetting(hero, this, Setting.AMOUNT, 20, false);
-    return getDescription().replace("$1", amount);
+    int amount = SkillConfigManager.getUseSetting(hero, this, SkillSetting.AMOUNT, 20, false);
+    return getDescription().replace("$1", amount + "");
   }
 
   public class DisarmEffect extends ExpirableEffect
@@ -95,7 +95,7 @@ public class SkillWhirlWind extends ActiveSkill
     private HashMap<Hero, ItemStack[]> disarms = new HashMap();
 
     public DisarmEffect(Skill skill, long duration, String applyText, String expireText) {
-      super("Disarm", duration);
+      super(skill,"Disarm", duration);
       this.types.add(EffectType.HARMFUL);
       this.types.add(EffectType.DISARM);
       this.applyText = applyText;

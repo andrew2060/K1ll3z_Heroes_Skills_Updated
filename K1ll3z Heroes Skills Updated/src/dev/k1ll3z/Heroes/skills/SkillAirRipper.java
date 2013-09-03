@@ -6,7 +6,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import java.util.Iterator;
 import java.util.List;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,15 +30,15 @@ public class SkillAirRipper extends ActiveSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.RADIUS.node(), Integer.valueOf(10));
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(10));
+    node.set(SkillSetting.RADIUS.node(), Integer.valueOf(10));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(10));
     return node;
   }
 
   public SkillResult use(Hero hero, String[] args)
   {
     Player player = hero.getPlayer();
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 10, false);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 10, false);
     List entities = hero.getPlayer().getNearbyEntities(radius, radius, radius);
     Iterator i$ = entities.iterator();
 
@@ -49,9 +49,9 @@ public class SkillAirRipper extends ActiveSkill
       LivingEntity target = (LivingEntity)entity;
       if (!target.equals(player))
       {
-        int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
+        int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
         addSpellTarget(target, hero);
-        damageEntity(target, player, damage, EntityDamageEvent.DamageCause.MAGIC);
+        damageEntity(target, player, damage, DamageCause.MAGIC);
       }
     }
 
@@ -61,9 +61,9 @@ public class SkillAirRipper extends ActiveSkill
 
   public String getDescription(Hero hero)
   {
-    int radius = SkillConfigManager.getUseSetting(hero, this, Setting.RADIUS, 20, false);
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 10, false);
-    return getDescription().replace("$1", damage);
+    int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS, 20, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 10, false);
+    return getDescription().replace("$1", damage + "");
   }
 }
 

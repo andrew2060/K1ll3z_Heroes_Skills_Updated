@@ -6,7 +6,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.TargettedSkill;
-import com.herocraftonline.heroes.util.Setting;
+import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.LivingEntity;
@@ -30,7 +30,7 @@ public class SkillPositionSwap extends TargettedSkill
   public ConfigurationSection getDefaultConfig()
   {
     ConfigurationSection node = super.getDefaultConfig();
-    node.set(Setting.DAMAGE.node(), Integer.valueOf(4));
+    node.set(SkillSetting.DAMAGE.node(), Integer.valueOf(4));
     return node;
   }
 
@@ -47,7 +47,7 @@ public class SkillPositionSwap extends TargettedSkill
 
   public String getDescription(Hero hero)
   {
-    int damage = SkillConfigManager.getUseSetting(hero, this, Setting.DAMAGE, 4, false);
+    int damage = SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE, 4, false);
     return getDescription().replace("$1", damage + "");
   }
 }

@@ -42,8 +42,8 @@ public class SkillBloodpact extends TargettedSkill
       return SkillResult.INVALID_TARGET;
     Hero targetHero = this.plugin.getCharacterManager().getHero((Player)target);
     int hpPlus = SkillConfigManager.getUseSetting(hero, this, "hpplus", 20, false);
-    double targetHealth = targetHero.getHealth();
-    if (targetHealth >= targetHero.getMaxHealth())
+    double targetHealth = targetHero.getEntity().getHealth();
+    if (targetHealth >= targetHero.getEntity().getMaxHealth())
     {
       Messaging.send(player, "Target is already fully healed.", new Object[0]);
       return SkillResult.INVALID_TARGET_NO_MSG;
@@ -55,11 +55,9 @@ public class SkillBloodpact extends TargettedSkill
       Messaging.send(player, "Unable to heal the target at this time!", new Object[0]);
       return SkillResult.CANCELLED;
     }
-    targetHero.setHealth((int)(targetHealth + hrhEvent.getAmount()));
-    targetHero.syncHealth();
+    targetHero.getEntity().setHealth((int)(targetHealth + hrhEvent.getAmount()));
     int hpminus = SkillConfigManager.getUseSetting(hero, this, "hpminus", 15, false);
-    hero.setHealth(hero.getHealth() - hpminus);
-    hero.syncHealth();
+    hero.getEntity().setHealth(hero.getEntity().getHealth() - hpminus);
     broadcastExecuteText(hero);
     return SkillResult.NORMAL;
   }
@@ -67,7 +65,7 @@ public class SkillBloodpact extends TargettedSkill
   public String getDescription(Hero hero)
   {
     int hpminus = SkillConfigManager.getUseSetting(hero, this, "hpminus", 15, false);
-    return getDescription().replace("$1", hpminus);
+    return getDescription().replace("$1", hpminus + "");
   }
 }
 
