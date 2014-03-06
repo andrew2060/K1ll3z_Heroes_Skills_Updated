@@ -13,8 +13,8 @@
 			<url>http://repo.md-5.net/</url>
 		</repository>
 		<repository>
-			<id>heroes-repo</id>
-			<url>http://nexus.theyeticave.net/content/groups/herocraft/</url>
+			<id>koa-repo</id>
+			<url>http://ci.kingdomsofarden.net/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 	<url>www.kingdomsofarden.net</url>
@@ -35,18 +35,18 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.6.2-R0.1-SNAPSHOT</version>
+			<version>1.7.2-R0.3-SNAPSHOT</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>com.herocraftonline.heroes</groupId>
 			<artifactId>Heroes</artifactId>
-			<version>1.5.3.3</version>
+			<version>1.5.5</version>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.6.2-R0.1-SNAPSHOT</version>
+			<version>1.7.2-R0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
